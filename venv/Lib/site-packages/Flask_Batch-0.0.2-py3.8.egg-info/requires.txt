@@ -1,0 +1,6 @@
+six
+werkzeug-raw
+flask
+
+[client]
+requests
