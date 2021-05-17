@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import requests
 import json
 import time
@@ -42,7 +42,7 @@ def movies():
 
 @app.route('/person', methods=['GET'])
 def person():
-    person_id = '7467'
+    person_id = request.args.get('id')
     TMDB_API_KEY = 'e453502d7e2f31ded447961d9d1f121c'
     person_details = requests.get(
         'https://api.themoviedb.org/3/person/' + person_id + '?api_key=' + TMDB_API_KEY + '&language=en-US').json()
@@ -59,7 +59,7 @@ def person():
 
 @app.route('/movie', methods=['GET'])
 def movie():
-    movie_id = '460465'
+    movie_id = request.args.get('id')
     TMDB_API_KEY = 'e453502d7e2f31ded447961d9d1f121c'
     movie_details = requests.get(
         'https://api.themoviedb.org/3/movie/' + movie_id + '?api_key=' + TMDB_API_KEY + '&language=en-US').json()
@@ -75,6 +75,3 @@ def movie():
     movie_response = {'details': movie_details, 'credits': movie_credits, 'trailer': trailer}
     return json.dumps(movie_response)
 
-
-if __name__ == '__main__':
-    app.run()
