@@ -70,10 +70,6 @@ def movie():
     movie_videos = requests.get(
         'https://api.themoviedb.org/3/movie/' + movie_id + '/videos?api_key=' + TMDB_API_KEY + '&language=en-US').json()
     print(movie_videos['results'])
-    trailer = None
-    for video in movie_videos['results']:
-        if video['type'] == 'Trailer':
-            trailer = video
-    movie_response = {'details': movie_details, 'credits': movie_credits, 'trailer': trailer}
+    movie_response = {'details': movie_details, 'credits': movie_credits, 'videos': movie_videos}
     return json.dumps(movie_response)
 
