@@ -66,7 +66,10 @@ def movie():
         'https://api.themoviedb.org/3/movie/' + movie_id + '/credits?api_key=' + TMDB_API_KEY + '&language=en-US').json()
     movie_videos = requests.get(
         'https://api.themoviedb.org/3/movie/' + movie_id + '/videos?api_key=' + TMDB_API_KEY + '&language=en-US').json()
-    movie_response = {'details': movie_details, 'credits': movie_credits, 'videos': movie_videos}
+    similar_movies = requests.get(
+        'https://api.themoviedb.org/3/movie/' + movie_id + '/similar?api_key=' + TMDB_API_KEY + '&language=en-US').json()
+    movie_response = {'details': movie_details, 'credits': movie_credits, 'videos': movie_videos,
+                      'similar_movies': similar_movies['results']}
     return json.dumps(movie_response)
 
 
