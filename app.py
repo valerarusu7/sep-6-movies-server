@@ -76,21 +76,22 @@ def compare():
     new_movie_id = request.args.get('movie_id')
     TMDB_API_KEY = 'e453502d7e2f31ded447961d9d1f121c'
 
-    movie_details = requests.get(
-        'https://api.themoviedb.org/3/movie/' + new_movie_id + '?api_key=' + TMDB_API_KEY + '&language=en-US').json()
-    compare_movies.append(movie_details)
+    if new_movie_id != '0':
+        movie_details = requests.get(
+            'https://api.themoviedb.org/3/movie/' + new_movie_id + '?api_key=' + TMDB_API_KEY + '&language=en-US').json()
+        compare_movies.append(movie_details)
 
     high_revenue = 0
     high_budget = 0
     high_rating = 0
     high_runtime = 0
     high_count = 0
-
     high_revenue_id = 0
     high_budget_id = 0
     high_rating_id = 0
     high_runtime_id = 0
     high_count_id = 0
+    highest_revenue = 0
 
     for compare_movie in compare_movies:
         if compare_movie['revenue'] >= high_revenue:
@@ -112,8 +113,6 @@ def compare():
         if compare_movie['vote_count'] >= high_count:
             high_count_id = compare_movie['id']
             high_count = compare_movie['vote_count']
-
-    highest_revenue = 0
 
     for m in compare_movies:
         if m['id'] == high_revenue_id:
