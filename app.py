@@ -80,48 +80,45 @@ def compare():
         'https://api.themoviedb.org/3/movie/' + new_movie_id + '?api_key=' + TMDB_API_KEY + '&language=en-US').json()
     compare_movies.append(movie_details)
 
-    index = 0
-    if len(compare_movies) == 2:
-        index = 1
-    if len(compare_movies) == 3:
-        index = 2
+    high_revenue = 0
+    high_budget = 0
+    high_rating = 0
+    high_runtime = 0
+    high_count = 0
 
-    high_revenue = compare_movies[index]['revenue']
-    high_budget = compare_movies[index]['budget']
-    high_rating = compare_movies[index]['vote_average']
-    high_runtime = compare_movies[index]['runtime']
-    high_count = compare_movies[index]['vote_count']
+    high_revenue_id = 0
+    high_budget_id = 0
+    high_rating_id = 0
+    high_runtime_id = 0
+    high_count_id = 0
 
     for compare_movie in compare_movies:
         if compare_movie['revenue'] >= high_revenue:
-            compare_movie['highest_revenue'] = True
+            high_revenue_id = compare_movie['id']
             high_revenue = compare_movie['revenue']
-        else:
-            compare_movie['highest_revenue'] = False
 
         if compare_movie['budget'] >= high_budget:
-            compare_movie['highest_budget'] = True
+            high_budget_id = compare_movie['id']
             high_budget = compare_movie['budget']
-        else:
-            compare_movie['highest_budget'] = False
 
         if compare_movie['vote_average'] >= high_rating:
-            compare_movie['highest_rating'] = True
+            high_rating_id = compare_movie['id']
             high_rating = compare_movie['vote_average']
-        else:
-            compare_movie['highest_rating'] = False
 
         if compare_movie['runtime'] >= high_runtime:
-            compare_movie['highest_runtime'] = True
+            high_runtime_id = compare_movie['id']
             high_runtime = compare_movie['runtime']
-        else:
-            compare_movie['highest_runtime'] = False
 
         if compare_movie['vote_count'] >= high_count:
-            compare_movie['highest_vote_count'] = True
+            high_count_id = compare_movie['id']
             high_count = compare_movie['vote_count']
-        else:
-            compare_movie['highest_vote_count'] = False
+
+    for m in compare_movies:
+        m['highest_revenue_color'] = 'green' if m['id'] == high_revenue_id else 'red'
+        m['highest_budget_color'] = 'green' if m['id'] == high_budget_id else 'red'
+        m['highest_runtime_color'] = 'green' if m['id'] == high_runtime_id else 'red'
+        m['highest_rating_color'] = 'green' if m['id'] == high_rating_id else 'red'
+        m['highest_vote_count_color'] = 'green' if m['id'] == high_count_id else 'red'
 
     compare_movies_response = {'movies': compare_movies}
     return json.dumps(compare_movies_response)
