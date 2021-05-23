@@ -113,12 +113,23 @@ def compare():
             high_count_id = compare_movie['id']
             high_count = compare_movie['vote_count']
 
+    highest_revenue = 0
+
     for m in compare_movies:
-        m['highest_revenue_color'] = 'green' if m['id'] == high_revenue_id else 'red'
+        if m['id'] == high_revenue_id:
+            m['highest_revenue_color'] = 'green'
+            highest_revenue = m['revenue']
+        else:
+            m['highest_revenue_color'] = 'red'
         m['highest_budget_color'] = 'green' if m['id'] == high_budget_id else 'red'
         m['highest_runtime_color'] = 'green' if m['id'] == high_runtime_id else 'red'
         m['highest_rating_color'] = 'green' if m['id'] == high_rating_id else 'red'
         m['highest_vote_count_color'] = 'green' if m['id'] == high_count_id else 'red'
+
+    for m in compare_movies:
+        if m['id'] != high_revenue_id:
+            movie_revenue = m['revenue']
+            m['percentage_change'] = round(((highest_revenue - movie_revenue) / movie_revenue) * 100.0, 2)
 
     compare_movies_response = {'movies': compare_movies}
     return json.dumps(compare_movies_response)
