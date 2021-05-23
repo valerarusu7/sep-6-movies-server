@@ -2,6 +2,7 @@ from flask import Flask, request
 import requests
 import json
 from flask_cors import CORS
+from bs4 import BeautifulSoup as BS
 
 app = Flask(__name__)
 CORS(app)
@@ -135,3 +136,25 @@ def compare():
 
     compare_movies_response = {'movies': compare_movies}
     return json.dumps(compare_movies_response)
+
+
+@app.route('/box-offices', methods=['GET'])
+def box_office():
+    year = request.args.get('year')
+    page = requests.get(
+        'https://www.boxofficemojo.com/year/' + year + '/?grossesOption=totalGrosses&sort=rank&sortDir=asc')
+    soup = BS(page.content, 'html.parser')
+
+    titles_data = []
+    titles = soup.find_all('td', class_='a-text-left mojo-field-type-release mojo-cell-wide')
+    gross = soup.find_all('td', class_='a-text-right mojo-field-type-money mojo-estimatable')
+    theaters = soup.find_all('td', class_='a-text-right mojo-field-type-positive_integer')
+
+    for i in range(0, 29):
+        gross_movie = {'rank': i + 1, 'name': titles[i].select('a')[0].string,
+                       'gross': gross[i].string.replace(',', '').replace('$', ''),
+                       'theaters': theaters[i].string.replace(',', '')}
+        titles_data.append(gross_movie)
+
+    box_office_response = {'box_office_movies': titles_data}
+    return json.dumps(box_office_response)
