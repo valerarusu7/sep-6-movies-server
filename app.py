@@ -80,11 +80,11 @@ def compare():
         'https://api.themoviedb.org/3/movie/' + new_movie_id + '?api_key=' + TMDB_API_KEY + '&language=en-US').json()
     compare_movies.append(movie_details)
 
-    high_revenue = compare_movies[1]['revenue']
-    high_budget = compare_movies[1]['budget']
-    high_rating = compare_movies[1]['vote_average']
-    high_runtime = compare_movies[1]['runtime']
-    high_count = compare_movies[1]['vote_count']
+    high_revenue = compare_movies[0]['revenue']
+    high_budget = compare_movies[0]['budget']
+    high_rating = compare_movies[0]['vote_average']
+    high_runtime = compare_movies[0]['runtime']
+    high_count = compare_movies[0]['vote_count']
 
     for compare_movie in compare_movies:
         if compare_movie['revenue'] >= high_revenue:
