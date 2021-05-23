@@ -60,21 +60,62 @@ def person():
 def movie():
     movie_id = request.args.get('id')
     TMDB_API_KEY = 'e453502d7e2f31ded447961d9d1f121c'
-    trailer = None
-
     movie_details = requests.get(
         'https://api.themoviedb.org/3/movie/' + movie_id + '?api_key=' + TMDB_API_KEY + '&language=en-US').json()
     movie_credits = requests.get(
         'https://api.themoviedb.org/3/movie/' + movie_id + '/credits?api_key=' + TMDB_API_KEY + '&language=en-US').json()
     movie_videos = requests.get(
         'https://api.themoviedb.org/3/movie/' + movie_id + '/videos?api_key=' + TMDB_API_KEY + '&language=en-US').json()
-    similar_movies = requests.get(
-        'https://api.themoviedb.org/3/movie/' + movie_id + '/similar?api_key=' + TMDB_API_KEY + '&language=en-US').json()
-
-    for video in movie_videos['results']:
-        if video['type'] == 'Trailer':
-            trailer = video
-    movie_response = {'details': movie_details, 'credits': movie_credits, 'trailer': trailer,
-                      'similar_movies': similar_movies['results'][:5]}
-
+    movie_response = {'details': movie_details, 'credits': movie_credits, 'videos': movie_videos}
     return json.dumps(movie_response)
+
+
+@app.route('/compare', methods=['POST'])
+def compare():
+    compare_movies = request.json['movies']
+    new_movie_id = request.args.get('movie_id')
+    TMDB_API_KEY = 'e453502d7e2f31ded447961d9d1f121c'
+
+    movie_details = requests.get(
+        'https://api.themoviedb.org/3/movie/' + new_movie_id + '?api_key=' + TMDB_API_KEY + '&language=en-US').json()
+    compare_movies.append(movie_details)
+
+    high_revenue = compare_movies[1]['revenue']
+    high_budget = compare_movies[1]['budget']
+    high_rating = compare_movies[1]['vote_average']
+    high_runtime = compare_movies[1]['runtime']
+    high_count = compare_movies[1]['vote_count']
+
+    for compare_movie in compare_movies:
+        if compare_movie['revenue'] >= high_revenue:
+            compare_movie['highest_revenue'] = True
+            high_revenue = compare_movie['revenue']
+        else:
+            compare_movie['highest_revenue'] = False
+
+        if compare_movie['budget'] >= high_budget:
+            compare_movie['highest_budget'] = True
+            high_budget = compare_movie['budget']
+        else:
+            compare_movie['highest_budget'] = False
+
+        if compare_movie['vote_average'] >= high_rating:
+            compare_movie['highest_rating'] = True
+            high_rating = compare_movie['vote_average']
+        else:
+            compare_movie['highest_rating'] = False
+
+        if compare_movie['runtime'] >= high_runtime:
+            compare_movie['highest_runtime'] = True
+            high_runtime = compare_movie['runtime']
+        else:
+            compare_movie['highest_runtime'] = False
+
+        if compare_movie['vote_count'] >= high_count:
+            compare_movie['highest_vote_count'] = True
+            high_count = compare_movie['vote_count']
+        else:
+            compare_movie['highest_vote_count'] = False
+
+    compare_movies_response = {'movies': compare_movies}
+    return json.dumps(compare_movies_response)
