@@ -51,8 +51,11 @@ def person():
     for movie in person_movies['results']:
         average_movies_rating += movie['vote_average']
     top_5 = sorted(person_movies['results'], key=lambda x: x['vote_average'], reverse=True)
+    allMovies = sorted(person_movies['results'],
+                       key=lambda x: x['release_date'])
     average_movies_rating = round(average_movies_rating / len(person_movies['results']), 1)
-    person_response = {'details': person_details, 'average_movies_rating': average_movies_rating, 'top_5': top_5[:5]}
+    person_response = {'details': person_details, 'average_movies_rating': average_movies_rating, 'top_5': top_5[:5],
+                       'all_movies': allMovies}
 
     return json.dumps(person_response)
 
@@ -70,7 +73,7 @@ def movie():
     similar_movies = requests.get(
         'https://api.themoviedb.org/3/movie/' + movie_id + '/similar?api_key=' + TMDB_API_KEY + '&language=en-US').json()
     movie_response = {'details': movie_details, 'credits': movie_credits, 'videos': movie_videos,
-                      'similar_movies': similar_movies['results']}
+                      'similar_movies': similar_movies['results'][:5]}
     return json.dumps(movie_response)
 
 
